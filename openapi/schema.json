@@ -1,0 +1,371 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Magic The Gathering API",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://magicthegathering.test/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "card",
+      "description": "Everything about the cards",
+    },
+    {
+      "name": "deck",
+      "description": "Everything about the decks",
+    }
+  ],
+  "paths": {
+    "/cards": {
+      "get": {
+        "tags": [
+          "card"
+        ],
+        "summary": "Get all cards",
+        "description": "Get all cards with pagination",
+        "operationId": "getCards",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter by name or type",
+            "explode": true,
+            "style": "deepObject",
+            "schema": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "description": "The name of the card",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "The type of the card",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort cards based on cmc value",
+            "style": "form",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {"type": "array", "items": {"$ref": "#/components/schemas/Card"}},
+                    "links": {"type":  "object"},
+                    "meta": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cards/{cardId}": {
+      "get": {
+        "tags": [
+          "card"
+        ],
+        "summary": "Get card by ID",
+        "description": "Get card by card ID",
+        "operationId": "getCard",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "description": "ID of the card to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {"$ref": "#/components/schemas/Card"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    "/decks" : {
+      "get": {
+        "tags": [
+          "deck"
+        ],
+        "summary": "Get all decks",
+        "description": "Get all decks with pagination",
+        "operationId": "getDecks",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "description": "The cards that belong to the deck will be returned.",
+            "style": "form",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "cards",
+              "enum": [
+                "cards"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {"type": "array", "items": {"$ref": "#/components/schemas/Deck"}},
+                    "links": {"type":  "object"},
+                    "meta": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "deck"
+        ],
+        "summary": "Add a new deck",
+        "description": "Add a new deck",
+        "operationId": "addDeck",
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {"$ref": "#/components/schemas/Deck"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/decks/{deckId}": {
+      "get": {
+        "tags": [
+          "deck"
+        ],
+        "summary": "Get deck by ID",
+        "description": "Get deck by deck ID",
+        "operationId": "getDeck",
+        "parameters": [
+          {
+            "name": "deckId",
+            "in": "path",
+            "description": "ID of the deck to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "integer"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "The cards that belong to the deck will be returned.",
+            "style": "form",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "cards",
+              "enum": [
+                "cards"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {"$ref": "#/components/schemas/Deck"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    "/decks/{deckId}/cards": {
+      "post": {
+        "tags": [
+          "deck"
+        ],
+        "summary": "Add cards to a deck",
+        "description": "Add cards to a deck",
+        "operationId": "addCardsToDeck",
+        "parameters": [
+          {
+            "name": "deckId",
+            "in": "path",
+            "description": "ID of the deck to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCardsToDeckPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful operation, no response body"
+          },
+          "400": { "$ref": "#/components/schemas/Error"},
+          "404": {
+            "description": "Deck not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Card": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "00791f9d-0a30-508b-9c69-bfe69e91b991"
+          },
+          "name": {
+            "type": "string",
+            "example": "Lazav, Dimir Mastermind"
+          },
+          "cmc": {
+            "type": "integer",
+            "format": "int32",
+            "example": 7
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Land", "Instant", "Sorcery", "Artifact", "Creature", "Enchantment", "Planeswalker"]
+          }
+        }
+      },
+      "Deck": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "avgManaCost"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "avgManaCost": {
+            "type": "number",
+            "format": "float",
+            "example": 2.5
+          },
+          "cards" : {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/Card"}}
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["errors"],
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AddCardsToDeckPayload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
