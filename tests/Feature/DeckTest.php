@@ -40,7 +40,7 @@ class DeckTest extends TestCase
         $deck = $this->getOrCreateDeck();
 
         //WHEN
-        $response = $this->getJson('api/v1/decks/' . $deck->id);
+        $response = $this->getJson(sprintf('api/v1/decks/%d', $deck->id));
 
         //THEN
         $response
@@ -101,7 +101,7 @@ class DeckTest extends TestCase
         $this->getOrCreateCard(count: 3, addToDeck: true);
 
         //WHEN
-        $response = $this->getJson('api/v1/decks/' . $deck->id . '?include=cards');
+        $response = $this->getJson(sprintf('api/v1/decks/%s?include=cards', $deck->id));
 
         //THEN
         $response
@@ -152,7 +152,7 @@ class DeckTest extends TestCase
         ];
 
         //WHEN
-        $response = $this->postJson('api/v1/decks/' . $deck->id . '/cards', $payload);
+        $response = $this->postJson(sprintf('api/v1/decks/%d/cards', $deck->id), $payload);
 
         //THEN
         $response->assertNoContent();
@@ -174,7 +174,7 @@ class DeckTest extends TestCase
         ];
 
         //WHEN
-        $response = $this->postJson('api/v1/decks/' . $deck->id . '/cards', $payload);
+        $response = $this->postJson(sprintf('api/v1/decks/%d/cards', $deck->id), $payload);
 
         //THEN
         $response
@@ -202,7 +202,7 @@ class DeckTest extends TestCase
         ];
 
         //WHEN
-        $response = $this->postJson('api/v1/decks/' . $deck->id . '/cards', $payload);
+        $response = $this->postJson(sprintf('api/v1/decks/%d/cards', $deck->id), $payload);
 
         //THEN
         $response
@@ -253,7 +253,7 @@ class DeckTest extends TestCase
         ];
 
         //WHEN
-        $response = $this->postJson('api/v1/decks/' . $deck->id . '/cards', $payload);
+        $response = $this->postJson(sprintf('api/v1/decks/%d/cards', $deck->id), $payload);
 
         //THEN
         $response->assertNoContent();

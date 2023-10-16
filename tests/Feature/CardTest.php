@@ -40,7 +40,7 @@ class CardTest extends TestCase
         $card = $this->getOrCreateCard();
 
         //WHEN
-        $response = $this->getJson('api/v1/cards/' . $card->id);
+        $response = $this->getJson(sprintf('api/v1/cards/%s', $card->id));
 
         //THEN
         $response
